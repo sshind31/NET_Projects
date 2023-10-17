@@ -1,0 +1,86 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+
+namespace LoginWeb.Models
+{
+    public class User
+    {
+        [Key]
+        [DataType(DataType.Text)]
+        [Required(ErrorMessage = "please enter valid {0}")]
+        [StringLength(10, ErrorMessage = "The {0} value cannot exceed {1} characters.")]
+                        public string LoginName { set; get; }
+
+
+        [Required(ErrorMessage = "Please enter password")]
+        [DataType(DataType.Password)]
+                        public string Password { set; get; }
+
+
+        [Required(ErrorMessage = "Please enter confirm password")]
+        [Compare("Password", ErrorMessage = "Password and confirm password should be the same")]
+        [DataType(DataType.Password)]
+                        public string ConfirmPassword { get; set; }
+
+
+        //Allow up to 40 uppercase and lowercase  characters. Use custom error.
+        [RegularExpression(@"^[a-zA-Z''-'\s]{1,40}$",ErrorMessage = "Characters are not allowed.")]
+                        public string FullName { set; get; }
+
+
+        [EmailAddress]
+        [Required]
+                        public string EmailId { set; get; }
+
+
+        [Required]
+        [DataType(DataType.PhoneNumber)]
+                        public string Phone { set; get; }
+
+
+        [Required]
+        [ForeignKey("key")]
+                        public int CityId { set; get; }
+
+        private string conString = @"Data Source=(localdb)\ProjectsV13;Initial Catalog=JKJuly2022;Integrated Security=True";
+
+        public bool InserUserToDB(User user)
+        {
+            int id;
+            SqlConnection cn = new SqlConnection(conString);
+            try
+            {
+                SqlCommand cmdInsert = new SqlCommand();
+                cmdInsert.Connection = cn;
+                cmdInsert.CommandType = CommandType.Text;
+                cmdInsert.CommandText = "insert into dbo.Customers(LoginName,Password,FullName,EmailId,Phone,CityId) values(@a,@b,@c,@d,@e,@f)";
+                cmdInsert.Parameters.AddWithValue("@a", user.LoginName);
+                cmdInsert.Parameters.AddWithValue("@b", user.Password);
+                cmdInsert.Parameters.AddWithValue("@c", user.FullName);
+                cmdInsert.Parameters.AddWithValue("@d", user.EmailId);
+                cmdInsert.Parameters.AddWithValue("@e", user.Phone);
+                cmdInsert.Parameters.AddWithValue("@f", user.CityId);
+
+                cn.Open();
+                id = cmdInsert.ExecuteNonQuery();
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                cn.Close();
+            }
+
+
+            return id>0;
+        }
+    }
+}
