@@ -1,0 +1,32 @@
+Employee obj = Employee.GetSingleEployee(id);
+
+            List<SelectListItem> objDepts = Employee.SelectDepartments();
+             ViewBag.Departments = objDepts;
+
+            return View(obj);
+
+@Html.DropDownListFor(model=>model.DeptNo,(IEnumerable<SelectListItem>)ViewBag.Departments,new {@class="form-control" })
+
+				cn.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    CityList.Add(new SelectListItem 
+                    { 
+                        Text = dr["CityName"].ToString(), 
+                        Value = dr["CityId"].ToString() 
+                    });
+                }
+                dr.Close();
+
+
+CREATE TABLE [dbo].[Customers] (
+    [LoginName] VARCHAR (50) NOT NULL,
+    [Password]  VARCHAR (50) NOT NULL,
+    [FullName]  VARCHAR (50) NOT NULL,
+    [EmailId]   VARCHAR (50) NOT NULL,
+    [Phone]     VARCHAR (12) NOT NULL,
+    [CityId]    INT          NOT NULL,
+    PRIMARY KEY CLUSTERED ([LoginName] ASC),
+    CONSTRAINT [FK_Customers_CityDetails] FOREIGN KEY ([CityId]) REFERENCES [dbo].[CityDetails] ([CityId])
+);
