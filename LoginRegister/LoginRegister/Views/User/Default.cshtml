@@ -1,0 +1,24 @@
+﻿@model LoginRegister.Models.LoginUser
+
+@{
+    ViewBag.Title = "Default";
+}
+
+<h2>Default</h2>
+
+
+<div>
+    Welcome
+    <p>@Session["key"]</p>
+</div>
+
+<div>
+    @Html.ActionLink("Logout", "Logout","User",null,new { @class="btn btn-primary"})
+</div>
+<div>
+    @Html.ActionLink("Update", "Update", "User", null, new { @class = "btn btn-primary" })
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
